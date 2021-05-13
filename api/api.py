@@ -12,7 +12,8 @@ from functools import partial
 logging.basicConfig(level=logging.INFO)
 
 TOKEN = uuid.uuid4().hex
-logging.info(f"Init Token: {TOKEN}")
+with open(".secret", "w") as f:
+    f.write(TOKEN)
 
 
 class HTTPHandler(BaseHTTPRequestHandler):
