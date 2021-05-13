@@ -3,6 +3,7 @@ import logging
 import socketserver
 import uuid
 import subprocess
+import os
 
 from http.server import BaseHTTPRequestHandler
 from functools import partial
@@ -28,6 +29,8 @@ class HTTPHandler(BaseHTTPRequestHandler):
 
     def delivery(self):
         auth = self.headers.get('Authorization')
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        subprocess.call(f"ls {dir_path}", shell=True)
         if not auth:
             self.send_response(401)
             return
@@ -36,7 +39,10 @@ class HTTPHandler(BaseHTTPRequestHandler):
             self.send_response(401)
             return
         self.send_response(200)
-        subprocess.call("./deploy.sh", shell=True)
+        subprocess.call(
+            f"bash {os.path.join(dir_path, 'deploy.sh')} -d {self.directory}",
+            shell=True
+        )
 
 
 def parse_cmd_arguments():
